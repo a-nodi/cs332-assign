@@ -14,6 +14,8 @@ object Main {
   /** Exercise 1
     */
   def pascal(c: Int, r: Int): Int = {
+    require(c >= 0 && r >= 0, "c and r must be non-negative")
+    require(c <= r, "c must be less than or equal to r")
     if (c == 0 || r == 0 || c == r)
       1
     else
