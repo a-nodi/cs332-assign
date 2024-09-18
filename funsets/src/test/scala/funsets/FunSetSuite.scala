@@ -109,4 +109,174 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "Union 3")
     }
   }
+
+  test("check contain on arbitrary int") {
+    new TestSets {
+      val s = singletonSet(1)
+      assert(contains(s, 1))
+      assert(!contains(s, 2))
+    }
+  }
+
+  test("union on disjoint sets") {
+    new TestSets {
+      val s = union(s1, s2)
+      assert(contains(s, 1))
+      assert(contains(s, 2))
+      assert(!contains(s, 3))
+    }
+  }
+
+  test("union on overlapping sets") {
+    new TestSets {
+      val s12 = union(s1, s2)
+      val s23 = union(s2, s3)
+      val s = union(s12, s23)
+      
+      assert(contains(s, 1))
+      assert(contains(s, 2))
+      assert(contains(s, 3))
+    }
+  }
+
+  test("intersect on disjoint sets") {
+    new TestSets {
+      val s = intersect(s1, s2)
+      assert(!contains(s, 1))
+      assert(!contains(s, 2))
+    }
+  }
+
+  test("intersect on overlapping sets") {
+    new TestSets {
+      val s12 = union(s1, s2)
+      val s23 = union(s2, s3)
+      val s = intersect(s12, s23)
+      
+      assert(!contains(s, 1))
+      assert(contains(s, 2))
+      assert(!contains(s, 3))
+    }
+  }
+
+  test("diff on disjoint sets") {
+    new TestSets {
+      val s = diff(s1, s2)
+      assert(contains(s, 1))
+      assert(!contains(s, 2))
+    }
+  }
+
+  test("diff on overlapping sets") {
+    new TestSets {
+      val s12 = union(s1, s2)
+      val s23 = union(s2, s3)
+      val s = diff(s12, s23)
+      assert(contains(s, 1))
+      assert(!contains(s, 2))
+      assert(!contains(s, 3))
+    }
+  }
+
+  test("simple filter") {
+    new TestSets {
+      val s = filter(s1, _ == 1)
+      assert(contains(s, 1))
+      assert(!contains(s, 2))
+    }
+  }
+
+  test("filter on big set"){
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      val f = filter(s, _ % 2 == 0)
+      assert(contains(f, 2))
+      assert(!contains(f, 1))
+      assert(!contains(f, 3))
+    }
+  }
+
+  test("forall on empty set") {
+    new TestSets {
+      assert(forall(x => false, _ => false))
+    }
+  }
+
+  test("forall on singleton set") {
+    new TestSets {
+      assert(forall(s1, _ == 1))
+    }
+  }
+
+  test("forall on big set") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      assert(forall(s, _ < 4))
+      assert(!forall(s, _ < 3))
+    }
+  }
+
+  test("forall upper bound test") {
+    new TestSets {
+      val s1000 = singletonSet(1000)
+      val s = union(union(s1, s2), s1000)
+
+      assert(forall(s, _ < 1001))
+      assert(!forall(s, _ < 1000))
+    }
+  }
+
+  test("forall lower bound test") {
+    new TestSets {
+      val s1000 = singletonSet(-1000)
+      val s = union(union(s1, s2), s1000)
+
+      assert(forall(s, _ > -1001))
+      assert(!forall(s, _ > -1000))
+    }
+  }
+
+  test("exists on empty set") {
+    new TestSets {
+      assert(!exists(x => false, _ => true))
+      assert(!exists(x => false, _ => false))
+    }
+  }
+
+  test("exists on singleton set") {
+    new TestSets {
+      assert(exists(s1, _ == 1))
+      assert(!exists(s1, _ == 2))
+    }
+  }
+
+  test("exists on big set") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      assert(exists(s, _ < 4))
+      assert(exists(s, _ < 3))
+      assert(!exists(s, _ > 3))
+    }
+  }
+
+  test("map on singleton set") {
+    new TestSets {
+      val s = map(s1, _ + 1)
+      assert(contains(s, 2))
+      assert(!contains(s, 1))
+    }
+  }
+
+  test("map on big set") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      val m = map(s, _ * 2)
+      assert(contains(m, 2))
+      assert(contains(m, 4))
+      assert(contains(m, 6))
+      assert(!contains(m, 1))
+      assert(!contains(m, 3))
+      assert(!contains(m, 5))
+    }
+  }
 }
