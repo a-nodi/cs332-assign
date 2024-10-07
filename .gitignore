@@ -4,3 +4,9 @@
 */project/project
 */project/target
 */target
+*/.settings/
+*/lib/
+*/project/
+*/.classpath
+*/.project
+*/build.sbt
