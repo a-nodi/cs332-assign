@@ -33,11 +33,15 @@ object Anagrams {
    *  Note: the uppercase and lowercase version of the character are treated as the
    *  same character, and are represented as a lowercase character in the occurrence list.
    */
-  def wordOccurrences(w: Word): Occurrences = ???
+  def wordOccurrences(w: Word): Occurrences = {
+    val filteredWord = w.toLowerCase.filter(char => char.isLetterOrDigit)
+    val groupedCharMap = filteredWord.groupBy(char => char).map { case (char, concatenatedChar) => (char, concatenatedChar.length) }
+    val sortedCharList = groupedCharMap.toList.sortBy(char => char._1)
+    sortedCharList
+  }
 
   /** Converts a sentence into its character occurrence list. */
   def sentenceOccurrences(s: Sentence): Occurrences = ???
-
   /** The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
    *  the words that have that occurrence count.
    *  This map serves as an easy way to obtain all the anagrams of a word given its occurrence list.
