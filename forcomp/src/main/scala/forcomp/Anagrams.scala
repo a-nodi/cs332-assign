@@ -41,7 +41,15 @@ object Anagrams {
   }
 
   /** Converts a sentence into its character occurrence list. */
-  def sentenceOccurrences(s: Sentence): Occurrences = ???
+  def sentenceOccurrences(s: Sentence): Occurrences = {
+    val wordOccurencesList = s.map(wordOccurrences) 
+    val mergedCharMap = wordOccurencesList.flatten.groupBy(char => char._1).map { 
+      case (char, occurrences) => (char, occurrences.map(_occurrence => _occurrence._2).sum) 
+    }
+    val sortedCharList = mergedCharMap.toList.sortBy(char => char._1)
+    sortedCharList
+  }
+  
   /** The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
    *  the words that have that occurrence count.
    *  This map serves as an easy way to obtain all the anagrams of a word given its occurrence list.
