@@ -182,6 +182,22 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    def createOneAnagram(occurrences: Occurrences): List[Sentence] = {
+      occurrences match {
+        case Nil => List(Nil)
+        case _ => {
+          for {
+            anagram <- combinations(occurrences)
+            // Search the word in the dictionary that matches the anagram
+            searchedAnagram <- dictionaryByOccurrences.getOrElse(anagram, Nil)
+            // Remove the word from the occurrences and recursively call createOneAnagram
+            afterSearchedAnagram <- createOneAnagram(subtract(occurrences, wordOccurrences(searchedAnagram)))
+          } yield searchedAnagram :: afterSearchedAnagram
+        }
+      }
+    }
+    createOneAnagram(sentenceOccurrences(sentence))
+  }
 
 }
