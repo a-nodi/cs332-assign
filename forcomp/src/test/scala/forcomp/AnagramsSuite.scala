@@ -24,6 +24,9 @@ class AnagramsSuite extends FunSuite {
     assert(sentenceOccurrences(List("abcd", "e")) === List(('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1)))
   }
 
+  test("sentenceOccurrences: abcd e abcd ee") {
+    assert(sentenceOccurrences(List("abcd", "e", "abcd", "ee")) === List(('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 3)))
+  }
 
 
   test("dictionaryByOccurrences.get: eat") {
@@ -40,7 +43,9 @@ class AnagramsSuite extends FunSuite {
     assert(wordAnagrams("player").toSet === Set("parley", "pearly", "player", "replay"))
   }
 
-
+  test("word anagrams: thereshouldebenoanagramsforthisword") {
+    assert(wordAnagrams("thereshouldebenoanagramsforthisword").toSet === Nil.toSet)
+  }
 
   test("subtract: lard - r") {
     val lard = List(('a', 1), ('d', 1), ('l', 1), ('r', 1))
