@@ -106,7 +106,19 @@ object Anagrams {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+  def combinations(occurrences: Occurrences): List[Occurrences] = {
+    occurrences match {
+      case Nil => List(List())
+      case (char, count) :: tail => {
+        val tailCombinationList = combinations(tail) // Recursive call to get the rest of the char's combinations
+        val currentCharCombinationList = (for {
+          partialCombination <- tailCombinationList // For each combination of the rest of the char's combinations
+          _count <- 1 to count // For each count of the char
+        } yield (char, _count) :: partialCombination) // Add the combinations of char to the partial combinations  
+        currentCharCombinationList ::: tailCombinationList // Concate current char's combination with the rest of the char's combinations
+      }
+    }
+  }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    * 
