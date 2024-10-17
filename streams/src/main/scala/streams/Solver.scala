@@ -82,7 +82,7 @@ trait Solver extends GameDef {
         val updatedQueue = tail #::: newNeighborsOnly(neighborsWithHistory(block, history), _explored)
         val updatedExplored = _explored ++ updatedQueue.map { case (block, history) => block }
         
-        // Reconcatenate the updatedQueue with the tail and perform bfs with 
+        // Reconcatenate the updatedQueue with the tail and perform bfs
         (block, history) #:: bfs(updatedQueue, updatedExplored)
     }
 
