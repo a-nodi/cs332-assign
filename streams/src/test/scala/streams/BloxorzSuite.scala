@@ -26,6 +26,19 @@ class BloxorzSuite extends FunSuite {
     }
   }
 
+  trait Level0 extends SolutionChecker {
+      /* terrain for level 0*/
+
+    val level =
+      """------
+        |--ST--
+        |--oo--
+        |--oo--
+        |------""".stripMargin
+
+    val optsolution = List(Down, Right, Up)
+  }
+
   trait Level1 extends SolutionChecker {
       /* terrain for level 1*/
 
@@ -50,6 +63,48 @@ class BloxorzSuite extends FunSuite {
   test("findChar level 1") {
     new Level1 {
       assert(startPos == Pos(1,1))
+    }
+  }
+
+  test("neighbour with history") {
+    new Level1 {
+      val block = Block(Pos(1,1), Pos(1,1))
+      val history = List(Left, Up)
+      val expected = Set(
+        (Block(Pos(1,2), Pos(1,3)), List(Right, Left, Up)),
+        (Block(Pos(2,1), Pos(3,1)), List(Down, Left, Up))
+      )
+      assert(neighborsWithHistory(block, history).toSet == expected)
+    }
+  }
+
+  test("new neighbours only") {
+    new Level1 {
+      val testValue = newNeighborsOnly(
+        Set(
+          (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
+          (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+        ).toStream,
+        Set(Block(Pos(1,2),Pos(1,3)), Block(Pos(1,1),Pos(1,1)))
+      )
+
+      val expected = Set(
+        (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      )
+
+      assert(testValue.toSet == expected)
+    }
+  }
+
+  test("optimal solution for level 0") {
+    new Level0 {
+      assert(solve(solution) == Block(goal, goal))
+    }
+  }
+
+  test("optimal solution length for level 0") {
+    new Level0 {
+      assert(solution.length == optsolution.length)
     }
   }
 
