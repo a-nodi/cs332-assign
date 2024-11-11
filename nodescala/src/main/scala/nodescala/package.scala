@@ -46,7 +46,7 @@ package object nodescala {
      */
     def delay(t: Duration): Future[Unit] = Future { 
       blocking { 
-        Thread.sleep(t.toMillis)
+        Thread.sleep(t.toMillis) // Should take seconds unit and convert it to milliseconds
       } 
     }
 
@@ -62,7 +62,7 @@ package object nodescala {
      */
     def run()(f: CancellationToken => Future[Unit]): Subscription = {
       val tokenSource = CancellationTokenSource()
-      f(tokenSource.cancellationToken)
+      f(tokenSource.cancellationToken) // Run the future with the cancellation token
       tokenSource
     }
   }
@@ -80,9 +80,9 @@ package object nodescala {
      *  depending on the current state of the `Future`.
      */
     def now: T = f.value match {
-      case Some(Success(v)) => v
-      case Some(Failure(e)) => throw e
-      case None => throw new NoSuchElementException("Future not completed")
+      case Some(Success(value)) => value // Get the value if the future is successful
+      case Some(Failure(error)) => throw error  // Throw the error if the future is failed
+      case None => throw new NoSuchElementException("Future not completed") // Throw an exception if the future is not completed
     }
 
     /** Continues the computation of this future by taking the current future
@@ -92,12 +92,12 @@ package object nodescala {
      *  The resulting future contains a value returned by `cont`.
      */
     def continueWith[S](cont: Future[T] => S): Future[S] = {
-      val p = Promise[S]()
+      val promise = Promise[S]()
       f.onComplete {
-        case Success(v) => p.complete(Try(cont(Future.successful(v))))
-        case Failure(e) => p.failure(e)
+        case Success(value) => promise.complete(Try(cont(Future.successful(value)))) // Complete the promise with the value
+        case Failure(error) => promise.failure(error) // Complete the promise with the error
       }
-      p.future
+      promise.future
     }
 
     /** Continues the computation of this future by taking the result
@@ -107,9 +107,9 @@ package object nodescala {
      *  The resulting future contains a value returned by `cont`.
      */
     def continue[S](cont: Try[T] => S): Future[S] = {
-      val p = Promise[S]()
-      f.onComplete(v => p.complete(Try(cont(v))))
-      p.future
+      val promise = Promise[S]()
+      f.onComplete(value => promise.complete(Try(cont(value)))) // Complete the promise with the value
+      promise.future
     }
 
   }
