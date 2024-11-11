@@ -48,7 +48,7 @@ trait NodeScala {
    */
   def start(relativePath: String)(handler: Request => Response): Subscription = {
     val listener = createListener(relativePath)
-    val subscription = listener.start()
+    val listenerSubscription = listener.start()
 
     val token = Future.run() { cancellationToken =>
       async {
@@ -57,10 +57,10 @@ trait NodeScala {
           val response = handler(request)
           respond(exchange, cancellationToken, response)
         }
-        subscription.unsubscribe()
+        listenerSubscription.unsubscribe()  
       }
     }
-    subscription
+    listenerSubscription
   }
 }
 

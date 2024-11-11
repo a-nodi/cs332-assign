@@ -41,6 +41,7 @@ object Main {
       case msg => {
         println(msg)
         myServerSubscription.unsubscribe()
+        println("Bye!")
       }
     }
   }
